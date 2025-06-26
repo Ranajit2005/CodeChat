@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        trim: true
+        trim: true,
+        default: "Anonymous"
     },
 
     username: {
@@ -30,7 +31,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "/defaultUser.png",
     },
-
 },{timestamps: true});
 
 const User = mongoose.model("User", userSchema);

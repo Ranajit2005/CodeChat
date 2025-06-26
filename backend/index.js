@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import dbConnection from './config/dbConnection.js';
+import authRouter from './routes/auth.route.js';
+import cookieParser from 'cookie-parser';
 
 
 dotenv.config();
@@ -10,9 +12,14 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use("static", express.static("public"));
+
+app.use("/api/auth",authRouter);
+
+
 
 app.listen(port, () => {
   dbConnection();
