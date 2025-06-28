@@ -1,16 +1,42 @@
-import { useState } from 'react';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const LogIn = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    // Handle form submission here
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      let result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
+        email: formData.email,
+        password: formData.password,
+      },{withCredentials: true});
+
+      if (result.data.success) {
+        toast(result?.data?.message, {
+          icon: "✅",
+          style: {
+            background: "#4ade80",
+            color: "#fff",
+          },
+        });
+      }
+    } catch (error) {
+      toast(error?.response?.data?.message, {
+        icon: "❌",
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -24,14 +50,18 @@ const LogIn = () => {
         <div className="p-8 lg:p-12">
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Log In Your Account</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Log In Your Account
+              </h2>
             </div>
 
             <div className="space-y-6">
-
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -39,7 +69,9 @@ const LogIn = () => {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={(e)=>setFormData({...formData,email:e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none"
                   placeholder="Enter your email"
                   required
@@ -48,7 +80,10 @@ const LogIn = () => {
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -57,7 +92,9 @@ const LogIn = () => {
                     id="password"
                     name="password"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                     className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none"
                     placeholder="Enter your password"
                     required
@@ -89,8 +126,11 @@ const LogIn = () => {
             {/* Additional Links */}
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                If you have no account, then go for {' '}
-                <a href="/signup" className="text-indigo-600 hover:text-indigo-700 font-medium transition duration-200">
+                If you have no account, then go for{" "}
+                <a
+                  href="/signup"
+                  className="text-indigo-600 hover:text-indigo-700 font-medium transition duration-200"
+                >
                   Sign Up
                 </a>
               </p>
@@ -105,14 +145,17 @@ const LogIn = () => {
               <div className="text-center text-white">
                 <div className="mb-8">
                   <div className="w-32 h-32 mx-auto  bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <img src="/chaticon.png" alt="Chat Icon" className="w-32 h-32"/>
+                    <img
+                      src="/chaticon.png"
+                      alt="Chat Icon"
+                      className="w-32 h-32"
+                    />
                   </div>
                 </div>
-                {/* <h1 className='text-3xl font-extrabold mb-2'>
-                    ChatCode
-                </h1> */}
-                <h3 className="text-2xl font-bold mb-4">Welcome to <span className='text-3xl  text-yellow-500'>ChatCode</span></h3>
-                
+                <h3 className="text-2xl font-bold mb-4">
+                  Welcome to{" "}
+                  <span className="text-3xl  text-yellow-500">ChatCode</span>
+                </h3>
               </div>
             </div>
           </div>

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -9,9 +11,35 @@ const SignUp = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    // Handle form submission here
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        let result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        },
+        {withCredentials: true});
+
+        if(result.data.success) {
+            toast(result?.data?.message,{
+                icon: '✅',
+                style: {
+                    background: '#4ade80',
+                    color: '#fff',
+                },
+            });
+        }
+    } catch (error) {
+
+      toast(error?.response?.data?.message,{
+        icon: '❌',
+        style: {
+          background: '#f87171',
+          color: '#fff',
+        },
+      });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -26,7 +54,6 @@ const SignUp = () => {
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-              {/* <p className="text-gray-600">Join us today and get started</p> */}
             </div>
 
             <div className="space-y-3">
@@ -126,11 +153,7 @@ const SignUp = () => {
                     <img src="/chaticon.png" alt="Chat Icon" className="w-32 h-32"/>
                   </div>
                 </div>
-                {/* <h1 className='text-3xl font-extrabold mb-2'>
-                    ChatCode
-                </h1> */}
                 <h3 className="text-2xl font-bold mb-4">Welcome to <span className='text-3xl  text-yellow-500'>ChatCode</span></h3>
-                
               </div>
             </div>
           </div>
