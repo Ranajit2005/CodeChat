@@ -3,6 +3,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
+
 const LogIn = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -17,10 +18,14 @@ const LogIn = () => {
     try {
       setIsLoading(true);
 
-      let result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
-        email: formData.email,
-        password: formData.password,
-      },{withCredentials: true});
+      let result = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        { withCredentials: true }
+      );
 
       setIsLoading(false);
 
@@ -45,7 +50,6 @@ const LogIn = () => {
       setIsLoading(false);
 
       // now redirect to home page
-
     }
   };
 
@@ -56,6 +60,29 @@ const LogIn = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2">
+        {/* Right Side - Image (Hidden on mobile) */}
+        <div className="hidden lg:block relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700">
+            <div className="flex items-center justify-center h-full p-12">
+              <div className="text-center text-white">
+                <div className="mb-8">
+                  <div className="w-32 h-32 mx-auto  bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <img
+                      src="/chaticon.png"
+                      alt="Chat Icon"
+                      className="w-32 h-32"
+                    />
+                  </div>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">
+                  Welcome to{" "}
+                  <span className="text-3xl  text-yellow-500">ChatCode</span>
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Left Side - Form */}
         <div className="p-8 lg:p-12">
           <div className="max-w-md mx-auto">
@@ -140,33 +167,11 @@ const LogIn = () => {
                 If you have no account, then go for{" "}
                 <a
                   href="/signup"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium transition duration-200">
+                  className="text-indigo-600 hover:text-indigo-700 font-medium transition duration-200"
+                >
                   Sign Up
                 </a>
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side - Image (Hidden on mobile) */}
-        <div className="hidden lg:block relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700">
-            <div className="flex items-center justify-center h-full p-12">
-              <div className="text-center text-white">
-                <div className="mb-8">
-                  <div className="w-32 h-32 mx-auto  bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <img
-                      src="/chaticon.png"
-                      alt="Chat Icon"
-                      className="w-32 h-32"
-                    />
-                  </div>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">
-                  Welcome to{" "}
-                  <span className="text-3xl  text-yellow-500">ChatCode</span>
-                </h3>
-              </div>
             </div>
           </div>
         </div>

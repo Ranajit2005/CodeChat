@@ -3,6 +3,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+
 const SignUp = () => {
   const [formData, setFormData] = useState({
     username: '',

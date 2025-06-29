@@ -4,6 +4,7 @@ import cors from 'cors';
 import dbConnection from './config/dbConnection.js';
 import authRouter from './routes/auth.route.js';
 import cookieParser from 'cookie-parser';
+import userRouter from './routes/user.route.js';
 
 
 dotenv.config();
@@ -23,8 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("static", express.static("public"));
 
 app.use("/api/auth",authRouter);
-
-
+app.use("/api/user",userRouter);
 
 app.listen(port, () => {
   dbConnection();
