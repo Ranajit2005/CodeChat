@@ -10,16 +10,21 @@ const SignUp = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+        setIsLoading(true);
+
         let result = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
           username: formData.username,
           email: formData.email,
           password: formData.password
         },
         {withCredentials: true});
+
+        setIsLoading(false);
 
         if(result.data.success) {
             toast(result?.data?.message,{
@@ -30,7 +35,13 @@ const SignUp = () => {
                 },
             });
         }
+
+        // Redirect to home page or login page after successful signup
+        
+
     } catch (error) {
+
+      setIsLoading(false);
 
       toast(error?.response?.data?.message,{
         icon: '❌',
@@ -126,8 +137,9 @@ const SignUp = () => {
                 type="button"
                 onClick={handleSubmit}
                 className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105"
+                disabled={isLoading}
               >
-                Create Account
+                {isLoading ? "Loading..." : "Sign Up"}
               </button>
             </div>
 

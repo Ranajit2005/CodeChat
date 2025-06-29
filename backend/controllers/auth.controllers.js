@@ -76,7 +76,7 @@ export const login = async (req,res) =>{
         if(!isPasswordMatch){
             return res.status(400).json({
                 success: false,
-                message: "Password is incorrect, please try again"
+                message: "Invalid credentials, please try again"
             })
         }
 
