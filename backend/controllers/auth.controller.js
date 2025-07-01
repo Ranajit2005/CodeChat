@@ -27,13 +27,13 @@ export const signUp = async (req,res) =>{
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = await User.create({
+        const user = await User.create({
             username,
             email,
             password: hashedPassword,
         })
 
-        const token = await genToken(newUser._id);
+        const token = await genToken(user._id);
 
         res.cookie("token",token,{
             httpOnly: true,
@@ -44,7 +44,8 @@ export const signUp = async (req,res) =>{
 
         return res.status(201).json({
             success: true,
-            message: "User created successfully"
+            message: "User created successfully",
+            user
         })
 
         
@@ -91,7 +92,8 @@ export const login = async (req,res) =>{
 
         return res.status(201).json({
             success: true,
-            message: "User login successfully"
+            message: "User login successfully",
+            user
         })
 
         

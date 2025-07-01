@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../features/userSlice";
 
 
 const LogIn = () => {
@@ -11,6 +13,7 @@ const LogIn = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +41,10 @@ const LogIn = () => {
           },
         });
       }
+
+      // console.log(result?.data?.user);
+      dispatch(setUserData(result?.data?.user));
+
     } catch (error) {
       toast(error?.response?.data?.message, {
         icon: "❌",

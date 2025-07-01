@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../features/userSlice';
 
 
 const SignUp = () => {
@@ -12,6 +14,7 @@ const SignUp = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +39,10 @@ const SignUp = () => {
                 },
             });
         }
+
+        // console.log(result?.data?.user);
+
+        dispatch(setUserData(result?.data?.user));
 
         // Redirect to home page or login page after successful signup
         
