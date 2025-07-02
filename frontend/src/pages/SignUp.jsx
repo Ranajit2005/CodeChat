@@ -4,6 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../features/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const SignUp = () => {
@@ -15,6 +16,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,13 +43,8 @@ const SignUp = () => {
         }
 
         setFormData({ username: '', email: '', password: '' });
-
-        // console.log(result?.data?.user);
-
         dispatch(setUserData(result?.data?.user));
-
-        // Redirect to home page or login page after successful signup
-        
+        navigate('/');
 
     } catch (error) {
 

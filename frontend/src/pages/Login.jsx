@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../features/userSlice";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 
 const LogIn = () => {
@@ -14,6 +16,7 @@ const LogIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,9 +46,8 @@ const LogIn = () => {
       }
 
       setFormData({ email: "", password: "" });
-
-      // console.log(result?.data?.user);
       dispatch(setUserData(result?.data?.user));
+      navigate("/");
 
     } catch (error) {
       toast(error?.response?.data?.message, {
@@ -65,6 +67,8 @@ const LogIn = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  if(isLoading) return <Loader/>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-4">
