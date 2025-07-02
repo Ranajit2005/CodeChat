@@ -40,6 +40,8 @@ const SignUp = () => {
             });
         }
 
+        setFormData({ username: '', email: '', password: '' });
+
         // console.log(result?.data?.user);
 
         dispatch(setUserData(result?.data?.user));

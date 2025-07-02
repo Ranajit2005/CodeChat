@@ -42,6 +42,8 @@ const LogIn = () => {
         });
       }
 
+      setFormData({ email: "", password: "" });
+
       // console.log(result?.data?.user);
       dispatch(setUserData(result?.data?.user));
 
