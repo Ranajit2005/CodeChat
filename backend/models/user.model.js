@@ -6,31 +6,32 @@ const userSchema = new mongoose.Schema({
         trim: true,
         default: "Anonymous"
     },
-
     username: {
         type: String,
         required: true,
         unique: true,
         trim: true
     },
-
     email: {
         type: String,
         required: true,
         unique: true,
         trim: true
     },
-
     password: {
         type: String,
         required: true,
         trim: true
     },
-
     image: {
         type: String,
         default: "/defaultUser.png",
     },
+    publicId:{
+        type: String,
+        default: ""
+    }
+    
 },{timestamps: true});
 
 const User = mongoose.model("User", userSchema);
