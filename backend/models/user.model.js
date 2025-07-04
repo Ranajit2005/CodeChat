@@ -25,13 +25,13 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: "/defaultUser.png",
+        default: "https://res.cloudinary.com/dixpqopet/image/upload/v1751643692/i08qrsvhkmaqrpngcnea.png",
     },
     publicId:{
         type: String,
         default: ""
     }
-    
+
 },{timestamps: true});
 
 const User = mongoose.model("User", userSchema);
