@@ -7,7 +7,6 @@ import { setUserData } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
-
 const LogIn = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -25,14 +24,12 @@ const LogIn = () => {
       setIsLoading(true);
 
       let result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        {
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,{
           email: formData.email,
           password: formData.password,
         },
         { withCredentials: true }
       );
-
       setIsLoading(false);
 
       if (result.data.success) {
@@ -59,8 +56,6 @@ const LogIn = () => {
       });
 
       setIsLoading(false);
-
-      // now redirect to home page
     }
   };
 
@@ -68,7 +63,7 @@ const LogIn = () => {
     setShowPassword(!showPassword);
   };
 
-  if(isLoading) return <Loader/>;
+  if (isLoading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-4">

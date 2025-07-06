@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { FaCamera } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import Loader from "../components/Loader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { setUserData } from "../features/userSlice";
 
 const ProfilePage = () => {
   let { userData } = useSelector((state) => state.user);
@@ -12,18 +15,19 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(userData?.image || "");
   const [publicId, setPublicId] = useState(userData?.publicId || "");
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [name, setName] = useState(userData?.name || null);
+  const [email, setEmail] = useState(userData?.email || null);
   const [hasChanges, setHasChanges] = useState(false);
 
   const fileInputRef = useRef(null);
+  const dispatch = useDispatch();
 
   // Check for changes whenever inputs change
   useEffect(() => {
     const isNameChanged = name !== null && name !== userData?.name;
     const isEmailChanged = email !== null && email !== userData?.email;
     const isImageChanged = image !== userData?.image;
-    
+
     setHasChanges(isNameChanged || isEmailChanged || isImageChanged);
   }, [name, email, image, userData]);
 
@@ -35,7 +39,7 @@ const ProfilePage = () => {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "women-health-project");
+    formData.append("upload_preset", "codeChat");
     formData.append("cloud_name", VITE_CLOUDNAME);
 
     try {
@@ -54,6 +58,15 @@ const ProfilePage = () => {
       setImage(uploadImage.secure_url);
       setPublicId(uploadImage.public_id);
       setLoading(false);
+
+      toast("Image uploaded successfully!", {
+        icon: "✅",
+        style: {
+          background: "#4ade80",
+          color: "#fff",
+        },
+      });
+
     } catch (error) {
       console.error("Error uploading image:", error);
       setLoading(false);
@@ -61,9 +74,48 @@ const ProfilePage = () => {
   };
 
   // Save changes
-  const handleChangeProfile = (e) => {
+  const handleChangeProfile = async (e) => {
     e.preventDefault();
-    console.log("detail : ", name, image, publicId, email);
+
+    try {
+      setLoading(true);
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/updateProfile`,{
+          name: name,
+          email: email,
+          image: image,
+          publicId: publicId,
+        },
+        { withCredentials: true}
+      );
+
+      setLoading(false);
+
+      if (res?.data?.success) {
+        setHasChanges(false);
+        dispatch(setUserData(res?.data?.user));
+
+        toast(res?.data?.message, {
+          icon: "✅",
+          style: {
+            background: "#4ade80",
+            color: "#fff",
+          },
+        });
+      }
+
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setLoading(false);
+
+      toast(error?.response?.data?.message, {
+        icon: "❌",
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+    }
   };
 
   if (loading) return <Loader />;

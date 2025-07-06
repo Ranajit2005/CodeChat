@@ -27,3 +27,37 @@ export const getCurrentUser = async (req, res) =>{
         });   
     }
 }
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { name, image, publicId, email } = req.body;
+        const userId = req.user;
+        
+        const user = await User.findByIdAndUpdate(userId,{
+            name,
+            image,
+            publicId,
+            email
+        });
+
+        if(!user){
+            return res.status(404).json({
+                success: false,
+                message: "User not found, please login again"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user,
+            message: "Profile updated successfully",
+        })
+
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
