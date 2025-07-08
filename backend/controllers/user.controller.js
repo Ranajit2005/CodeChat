@@ -61,3 +61,23 @@ export const updateProfile = async (req, res) => {
         });
     }
 }
+
+export const getOtherUser = async (req,res) => {
+    try {
+        const otherUsers = await User.find({
+            _id: { $ne: req.user }
+        }).select("-password");
+        
+        return res.status(200).json({
+            success: true,
+            otherUsers
+        });
+
+    } catch (error) {
+        console.error("Error fetching other users:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}

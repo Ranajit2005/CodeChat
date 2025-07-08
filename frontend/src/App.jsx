@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import LogIn from "./pages/Login";
 import Profile from "./pages/Profile";
 import Loader from "./components/Loader";
+import useOtherUsers from "./CustomHooks/useOtherUser";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
   const { userData,loading } = useSelector((state) => state.user);
 
   useCurrentUser();
+  useOtherUsers();
   if (loading) return <Loader/>;
 
   return (

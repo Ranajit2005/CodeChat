@@ -21,7 +21,7 @@ export const signUp = async (req,res) =>{
         if(checkByEmail){
             return res.status(400).json({
                 success: false,
-                message: "Email already exists, please try email"
+                message: "Email already exists, please try with other email"
             })
         }
 

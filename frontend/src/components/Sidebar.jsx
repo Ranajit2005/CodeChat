@@ -3,17 +3,18 @@ import { IoSearchOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { BiLogOutCircle } from "react-icons/bi";
 
 const Sidebar = () => {
-  const { userData } = useSelector((state) => state.user);
+  const { userData, otherUsers } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
 
-  // console.log("userData", userData);
+  console.log("otherusers: ", otherUsers);
   return (
     <div className="lg:w-1/3 w-full h-full">
       <div className="w-full h-1/3 bg-[#20c7ff] rounded-b-[30%] shadow-gray-400 shadow-lg flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-br from-blue-500 to--[#20c7ff] py-1 flex items-center justify-center gap-3 text-black">
+        <div className="bg-gradient-to-br from-blue-500 to-[#20c7ff] py-1 flex items-center justify-center gap-3 text-black">
           <img
             src="/chaticon.png"
             className="h-8 w-8 sm:h-10 sm:w-10"
@@ -45,9 +46,10 @@ const Sidebar = () => {
           </a>
         </div>
 
+
+        {/* Search and Other Users */}
         <div className="flex items-center justify-between px-5 pt-3 ">
           {/* Search */}
-
           <div className="flex items-center">
             <AnimatePresence mode="wait">
               {!search ? (
@@ -87,14 +89,36 @@ const Sidebar = () => {
             </AnimatePresence>
           </div>
 
-
-          
-
-          <div>Online Users</div>
+          {/* Other Users */}
+          {otherUsers && otherUsers.length > 0 && !search && (
+            <div className="flex items-center gap-3 pb-2">
+              {otherUsers.slice(-5).map((user) => (
+                <div key={user._id} className="relative group">
+                  <div className="flex items-center gap-2 rounded-full shadow-lg shadow-gray-400 cursor-pointer">
+                    <img
+                      src={user.image}
+                      alt={user.username}
+                      className="w-11 h-11  rounded-full hover:shadow-lg shadow-2xl shadow-gray-700 cursor-pointer"
+                    />
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                    @{user.username}
+                    <div className="absolute bottom-full left-1/2 w-2 h-2 bg-gray-800 transform -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       <div>chat</div>
+
+
+      
+
+
     </div>
   );
 };
