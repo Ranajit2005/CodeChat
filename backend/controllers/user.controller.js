@@ -38,7 +38,7 @@ export const updateProfile = async (req, res) => {
             image,
             publicId,
             email
-        });
+        },{new:true});
 
         if(!user){
             return res.status(404).json({
@@ -67,7 +67,7 @@ export const getOtherUser = async (req,res) => {
         const otherUsers = await User.find({
             _id: { $ne: req.user }
         }).select("-password");
-        
+
         return res.status(200).json({
             success: true,
             otherUsers

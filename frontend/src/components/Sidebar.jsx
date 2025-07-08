@@ -1,15 +1,58 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoSearchOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BiLogOutCircle } from "react-icons/bi";
+import axios from "axios";
+import { setOtherUsers, setUserData } from "../features/userSlice";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const { userData, otherUsers } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  console.log("otherusers: ", otherUsers);
+  const handleLogOut = async () => {
+
+    try {
+      const res = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
+        withCredentials: true,
+      });
+
+      dispatch(setUserData(null));
+      dispatch(setOtherUsers(null));
+
+      if (res.data.success) {
+        toast(res.data.message, {
+          icon: "✅",
+          style: {
+            background: "#4ade80",
+            color: "#fff",
+          },
+        });
+      }
+      
+      navigate("/login");
+      
+    } catch (error) {
+
+      if(error?.response?.data?.message) {
+        toast(error.response.data.message, {
+          icon: "❌",
+          style: {
+            background: "#f87171",
+            color: "#fff",
+          },
+        });
+      }
+    }
+  }
+
+
+
   return (
     <div className="lg:w-1/3 w-full h-full">
       <div className="w-full h-1/3 bg-[#20c7ff] rounded-b-[30%] shadow-gray-400 shadow-lg flex flex-col">
@@ -94,7 +137,7 @@ const Sidebar = () => {
             <div className="flex items-center gap-3 pb-2">
               {otherUsers.slice(-5).map((user) => (
                 <div key={user._id} className="relative group">
-                  <div className="flex items-center gap-2 rounded-full shadow-lg shadow-gray-400 cursor-pointer">
+                  <div className="flex items-center gap-2 bg-white rounded-full shadow-lg shadow-gray-400 cursor-pointer">
                     <img
                       src={user.image}
                       alt={user.username}
@@ -116,7 +159,15 @@ const Sidebar = () => {
       <div>chat</div>
 
 
-      
+      {/* Logout Button */}
+      <div className="fixed bottom-5 left-5 bg-[#20c7ff] rounded-full flex items-center justify-center ">
+        <button
+          onClick={handleLogOut}
+          className="flex items-center gap-2 p-2 text-black hover:text-red-600 transition-colors duration-200 hover:cursor-pointer"
+        >
+          <BiLogOutCircle className="text-xl" />
+        </button>
+      </div>
 
 
     </div>
