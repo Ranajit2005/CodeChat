@@ -16,11 +16,13 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
-
     try {
-      const res = await axios(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
-        withCredentials: true,
-      });
+      const res = await axios(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`,
+        {
+          withCredentials: true,
+        }
+      );
 
       dispatch(setUserData(null));
       dispatch(setOtherUsers(null));
@@ -34,12 +36,10 @@ const Sidebar = () => {
           },
         });
       }
-      
-      navigate("/login");
-      
-    } catch (error) {
 
-      if(error?.response?.data?.message) {
+      navigate("/login");
+    } catch (error) {
+      if (error?.response?.data?.message) {
         toast(error.response.data.message, {
           icon: "❌",
           style: {
@@ -49,9 +49,7 @@ const Sidebar = () => {
         });
       }
     }
-  }
-
-
+  };
 
   return (
     <div className="lg:w-1/3 w-full h-full">
@@ -80,7 +78,10 @@ const Sidebar = () => {
             </a>
           </div>
 
-          <a href="/profile">
+          <a
+            href="/profile"
+            className="flex justify-center items-center bg-white rounded-full p-0"
+          >
             <img
               src={userData?.image}
               alt="Profile"
@@ -88,7 +89,6 @@ const Sidebar = () => {
             />
           </a>
         </div>
-
 
         {/* Search and Other Users */}
         <div className="flex items-center justify-between px-5 pt-3 ">
@@ -156,8 +156,36 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div>chat</div>
-
+      {/* user Chat Section */}
+      <div>
+        {otherUsers && otherUsers.length > 0 ? (
+          <div className="h-2/3 overflow-y-auto scrollbar-hide px-1">
+            {otherUsers.map((user) => (
+              <a
+                key={user._id}
+                href={`/chat/${user._id}`}
+                className="flex items-center gap-3  hover:bg-gray-100 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
+              >
+                <img
+                  src={user?.image}
+                  alt={user?.username}
+                  className="w-12 h-12 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-1"
+                />
+                <div className="flex flex-col gap-0 py-2">
+                  <h2 className="text-lg font-semibold text-black">
+                    {user.name}
+                  </h2>
+                  <p className="text-sm text-gray-900">@{user?.username}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-2/3">
+            <p className="text-gray-700">No users found</p>
+          </div>
+        )}
+      </div>
 
       {/* Logout Button */}
       <div className="fixed bottom-5 left-5 bg-[#20c7ff] rounded-full flex items-center justify-center ">
@@ -168,38 +196,8 @@ const Sidebar = () => {
           <BiLogOutCircle className="text-xl" />
         </button>
       </div>
-
-
     </div>
   );
 };
 
 export default Sidebar;
-
-// {
-//   !search && (
-//     <div
-//       className=" rounded-full cursor-pointer overflow-hidden bg-white p-2 shadow-lg shadow-gray-400"
-//       onClick={() => setSearch(true)}
-//     >
-//       <IoSearchOutline className="text-2xl" />
-//     </div>
-//   );
-// }
-
-// {
-//   search && (
-//     <form className="flex items-center justify-start pl-3 gap-1 w-4/6 bg-white rounded-full py-1 shadow-lg shadow-gray-400 h-9">
-//       <IoSearchOutline className="text-2xl" />
-//       <input
-//         type="text"
-//         placeholder="Search User"
-//         className=" h-full bg-transparent outline-none"
-//       />
-//       <RxCross2
-//         className="text-xl cursor-pointer"
-//         onClick={() => setSearch(false)}
-//       />
-//     </form>
-//   );
-// }
