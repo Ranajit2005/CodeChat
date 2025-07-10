@@ -52,8 +52,8 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="lg:w-1/3 w-full h-full">
-      <div className="w-full h-1/3 bg-[#20c7ff] rounded-b-[30%] shadow-gray-400 shadow-lg flex flex-col">
+    <div className="lg:w-1/3 w-full h-full ">
+      <div className="w-full h-[200px] bg-[#20c7ff] rounded-b-[30%] shadow-gray-400 shadow-lg flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-br from-blue-500 to-[#20c7ff] py-1 flex items-center justify-center gap-3 text-black">
           <img
@@ -159,7 +159,7 @@ const Sidebar = () => {
       {/* user Chat Section */}
       <div>
         {otherUsers && otherUsers.length > 0 ? (
-          <div className="h-2/3 overflow-y-auto scrollbar-hide px-1">
+          <div className=" overflow-y-auto scrollbar-hide px-1">
             {otherUsers.map((user) => (
               <a
                 key={user._id}

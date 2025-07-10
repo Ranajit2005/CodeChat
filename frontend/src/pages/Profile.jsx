@@ -79,6 +79,18 @@ const ProfilePage = () => {
 
     try {
       setLoading(true);
+
+      if(name.length > 20){
+        setLoading(false);
+        return toast("Name should be less than 20 characters", {
+          icon: "❌",
+          style: {
+            background: "#f87171",
+            color: "#fff",
+          },
+        });
+      }
+
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/updateProfile`,{
           name: name,
