@@ -7,6 +7,7 @@ import { setUserData } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
+
 const LogIn = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -24,7 +25,8 @@ const LogIn = () => {
       setIsLoading(true);
 
       let result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,{
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+        {
           email: formData.email,
           password: formData.password,
         },
@@ -45,7 +47,7 @@ const LogIn = () => {
       setFormData({ email: "", password: "" });
       dispatch(setUserData(result?.data?.user));
       navigate("/");
-
+      
     } catch (error) {
       toast(error?.response?.data?.message, {
         icon: "❌",
@@ -68,9 +70,13 @@ const LogIn = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2">
-        {/* Right Side - Image (Hidden on mobile) */}
+        {/* Left Side - Image (Hidden on mobile) */}
         <div className="hidden lg:block relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-700">
+          <div
+            className="absolute inset-y-0 right-0 w-full h-full bg-cover bg-center opacity-50"
+            style={{ backgroundImage: `url('/chatImage.jpeg')` }}
+          ></div>
+          <div className="absolute inset-0 ">
             <div className="flex items-center justify-center h-full p-12">
               <div className="text-center text-white">
                 <div className="mb-8">
@@ -82,17 +88,19 @@ const LogIn = () => {
                     />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">
+                <h3 className="text-2xl text-black font-bold mb-4">
                   Welcome to{" "}
-                  <span className="text-3xl  text-yellow-500">ChatCode</span>
+                  <span className="text-3xl font-serif text-blue-700">
+                    ChatCode
+                  </span>
                 </h3>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Left Side - Form */}
-        <div className="p-8 lg:p-12">
+        {/* Right Side - Form */}
+        <div className="p-8 lg:p-12 bg-gradient-to-bl from-gray-100 to-indigo-300">
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">

@@ -5,12 +5,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
-import { setOtherUsers, setUserData } from "../features/userSlice";
+import { setOtherUsers, setSelectedUser, setUserData } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+
 const Sidebar = () => {
-  const { userData, otherUsers } = useSelector((state) => state.user);
+  const { userData, otherUsers,selectedUser } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="lg:w-1/3 w-full h-full ">
+    <div className={`lg:w-1/3 w-full h-full lg:block ${selectedUser === null ? "block" : "hidden"} bg-gradient-to-br from-purple-100 to-[#63d8ff]`}>
       <div className="w-full h-[200px] bg-[#20c7ff] rounded-b-[30%] shadow-gray-400 shadow-lg flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-br from-blue-500 to-[#20c7ff] py-1 flex items-center justify-center gap-3 text-black">
@@ -136,7 +137,7 @@ const Sidebar = () => {
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
               {otherUsers.slice(-5).map((user) => (
-                <div key={user._id} className="relative group">
+                <div key={user._id} className="relative group" onClick={() => dispatch(setSelectedUser(user))}>
                   <div className="flex items-center gap-2 bg-white rounded-full shadow-lg shadow-gray-400 cursor-pointer">
                     <img
                       src={user.image}
@@ -161,10 +162,10 @@ const Sidebar = () => {
         {otherUsers && otherUsers.length > 0 ? (
           <div className=" overflow-y-auto scrollbar-hide px-1">
             {otherUsers.map((user) => (
-              <a
+              <div
                 key={user._id}
-                href={`/chat/${user._id}`}
-                className="flex items-center gap-3  hover:bg-gray-100 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
+                onClick={()=>{dispatch(setSelectedUser(user))}}
+                className="flex items-center gap-3  hover:bg-blue-300 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
               >
                 <img
                   src={user?.image}
@@ -173,11 +174,11 @@ const Sidebar = () => {
                 />
                 <div className="flex flex-col gap-0 py-2">
                   <h2 className="text-lg font-semibold text-black">
-                    {user.name}
+                    {user?.name}
                   </h2>
                   <p className="text-sm text-gray-900">@{user?.username}</p>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         ) : (

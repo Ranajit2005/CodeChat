@@ -1,11 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { setSelectedUser } from "../features/userSlice";
 
 
 const MessageArea = () => {
-  const { userData } = useSelector((state) => state.user);
-  console.log("userData in MessageArea:", userData);
+  const { selectedUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  // console.log("userData in MessageArea:", userData);
+
+  console.log("selectedUser in MessageArea:", selectedUser);
+
   return (
-    <div className="lg:w-2/3 w-full h-full hidden sm:block overflow-hidden relative">
+    <div className={`lg:w-2/3 w-full h-full ${selectedUser === null ? "hidden" : "flex"} lg:block overflow-hidden relative`}>
 
       {/* background Image */}
       <div 
@@ -19,12 +25,16 @@ const MessageArea = () => {
         
         {/* Header */}
         <div className="bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3">
-          <img
-            src={userData?.image || "/defaultProfile.png"}
-            className="h-8 w-8 sm:h-10 sm:w-10 rounded-full"
-            alt="Chat Icon"
+          <IoMdArrowRoundBack
+            className="text-2xl cursor-pointer"
+            onClick={() => {dispatch(setSelectedUser(null))}}
           />
-          <h1 className="text-xl">{userData.username}</h1>
+          <img
+            src={selectedUser?.image || "/chaticon.png"}
+            className="h-8 w-8 sm:h-10 sm:w-10 rounded-full"
+            alt="🤔"
+          />
+          <h1 className="text-xl">{selectedUser?.username || "select user for chat"}</h1>
         </div>
 
       
