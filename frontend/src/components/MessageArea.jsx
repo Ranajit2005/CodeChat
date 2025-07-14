@@ -8,7 +8,7 @@ const MessageArea = () => {
   const dispatch = useDispatch();
   // console.log("userData in MessageArea:", userData);
 
-  console.log("selectedUser in MessageArea:", selectedUser);
+  // console.log("selectedUser in MessageArea:", selectedUser);
 
   return (
     <div className={`lg:w-2/3 w-full h-full ${selectedUser === null ? "hidden" : "flex"} lg:block overflow-hidden relative`}>

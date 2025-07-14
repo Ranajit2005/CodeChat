@@ -2,8 +2,10 @@ import { MdLockOutline } from "react-icons/md";
 
 
 const Landing = () => {
+  
   return (
     <div className="lg:w-2/3 w-full h-full hidden sm:block overflow-hidden relative">
+
       {/* background Image */}
       <div
         className="absolute inset-y-0 right-0 w-full h-full bg-cover bg-center opacity-50"
@@ -13,7 +15,7 @@ const Landing = () => {
       {/* Overlay, for absolute */}
       <div className="absolute w-full z-10 h-full flex flex-col items-center justify-center">
         <div className="backdrop-blur-sm bg-white/15 rounded-[30px] shadow-lg">
-          <div className="flex items-center justify-center h-70 w-100 flex-col">
+          <div className="flex items-center justify-center h-70 w-85 lg:w-100 flex-col">
             <img
               src="/chaticon.png"
               className="h-20 w-20 rounded-full"
