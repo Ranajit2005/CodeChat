@@ -1,5 +1,5 @@
-import Conversation from "../models/conversation.model";
-import Message from "../models/message.model";
+import Conversation from "../models/conversation.model.js";
+import Message from "../models/message.model.js";
 
 
 export const sendMessage = async (req, res) => {
@@ -25,7 +25,7 @@ export const sendMessage = async (req, res) => {
                 participants: [sender, receiver],
                 messages: [newMessage._id]
             })
-        }else{  // If we find conversation, it returns an array of messages objects, so we just push the new message id to the messages array
+        }else{  // If we find conversation, it returns an array of messages objects, so we just push the new message id to the messages array and save it
             conversation.messages.push(newMessage._id);
             await conversation.save();
         }
