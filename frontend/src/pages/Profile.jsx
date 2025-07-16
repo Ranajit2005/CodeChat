@@ -53,8 +53,6 @@ const ProfilePage = () => {
 
       const uploadImage = await res.json();
 
-      console.log("uploadImage", uploadImage);
-
       setImage(uploadImage.secure_url);
       setPublicId(uploadImage.public_id);
       setLoading(false);

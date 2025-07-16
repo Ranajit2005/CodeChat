@@ -4,25 +4,88 @@ import { setSelectedUser } from "../features/userSlice";
 import { RiEmojiStickerLine } from "react-icons/ri";
 import { FaImage } from "react-icons/fa6";
 import { BsFillSendFill } from "react-icons/bs";
-import { useState } from "react";
-import EmojiPicker from 'emoji-picker-react';
-
+import { useRef, useState } from "react";
+import EmojiPicker from "emoji-picker-react";
+import SenderMsg from "./SenderMsg";
+import ReciverMsg from "./ReciverMsg";
+import toast from "react-hot-toast";
+import Loader from "./Loader";
 
 const MessageArea = () => {
-  const { selectedUser } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const { selectedUser, userData } = useSelector((state) => state.user);
+
   const [showEmoji, setShowEmoji] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
+  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const fileInputRef = useRef(null);
+  const VITE_CLOUDNAME = import.meta.env.VITE_CLOUDNAME;
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    if (file.size > maxSize) {
+      toast.error("Image size must be under 1MB", {
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+      return;
+    }
+    setLoading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "codeChat");
+    formData.append("cloud_name", VITE_CLOUDNAME);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${VITE_CLOUDNAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const uploadImage = await res.json();
+
+      setImage(uploadImage.secure_url);
+      setLoading(false);
+
+      toast("Image uploaded successfully!", {
+        icon: "✅",
+        style: {
+          background: "#4ade80",
+          color: "#fff",
+        },
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image", {
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+      setLoading(false);
+    }
+  };
 
   const getEmoji = (emojiData) => {
     setInputMsg((prev) => prev + emojiData.emoji);
     setShowEmoji(false);
-  }
-
+  };
 
   // console.log("userData in MessageArea:", userData);
 
   // console.log("selectedUser in MessageArea:", selectedUser);
+  if (loading) return <Loader />;
 
   return (
     <div
@@ -57,13 +120,19 @@ const MessageArea = () => {
         </div>
 
         {/* meggase input area */}
-        <div className="w-full lg:w-[70%] h-[100px] fixed bottom-0 flex items-center justify-center">
-          <form className="w-[95%] lg:max-w-[70%] h-[50px] shadow-gray-500 shadow-lg rounded-full bg-blue-500 flex items-center justify-between px-3" onSubmit={(e) => {
-            e.preventDefault()}}>
-
+        <div className=" z-50 w-full lg:w-[70%] h-[100px] fixed bottom-0 flex items-center justify-center">
+          <form
+            className="w-[95%] lg:max-w-[70%] h-[50px] shadow-gray-500 shadow-lg rounded-full bg-blue-500 flex items-center justify-between px-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
             {/* emoji and input area */}
             <div className="flex w-full items-center justify-center gap-3">
-              <RiEmojiStickerLine className="text-3xl text-white cursor-pointer" onClick={()=>setShowEmoji(prev=>!prev)} />
+              <RiEmojiStickerLine
+                className="text-3xl text-white cursor-pointer"
+                onClick={() => setShowEmoji((prev) => !prev)}
+              />
               <input
                 type="text"
                 placeholder="type message here..."
@@ -75,20 +144,55 @@ const MessageArea = () => {
 
             {/* image and send button */}
             <div className="flex items-center gap-3 pr-3">
-              <FaImage className="text-2xl text-white cursor-pointer" />
+              {/* image upload */}
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              {image && (
+                <div className="fixed bottom-[90px] right-5 sm:right-15 ">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden border-4 border-indigo-500 shadow-lg">
+                    <img
+                      src={image}
+                      alt="Profile"
+                      className="w-full h-full object-cover p-1"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <button onClick={() => fileInputRef.current.click()}>
+                <FaImage className="text-2xl text-white cursor-pointer" />
+              </button>
               <BsFillSendFill className="text-2xl text-white cursor-pointer" />
             </div>
           </form>
         </div>
+
         {/* Emoji picker */}
         {showEmoji && (
           <div className="absolute bottom-[90px] left-5 z-20">
-              <EmojiPicker width={300} height={350} theme="dark" previewConfig={{ showPreview: false }}                 onEmojiClick={getEmoji}
-              className="shadow-lg shadow-gray-500"/>
+            <EmojiPicker
+              width={300}
+              height={350}
+              theme="dark"
+              previewConfig={{ showPreview: false }}
+              onEmojiClick={getEmoji}
+              className="shadow-lg shadow-gray-500"
+            />
           </div>
         )}
 
-
+        {/* Messages area */}
+        <div className="w-full h-full overflow-auto no-scrollbar">
+          {/* <SenderMsg/>
+          <ReciverMsg/> */}
+        </div>
+        
       </div>
     </div>
   );
