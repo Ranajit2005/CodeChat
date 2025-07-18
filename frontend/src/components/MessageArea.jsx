@@ -10,9 +10,13 @@ import SenderMsg from "./SenderMsg";
 import ReciverMsg from "./ReciverMsg";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
+import axios from "axios";
+import { setMessages } from "../features/messageSlice";
+
 
 const MessageArea = () => {
   const { selectedUser, userData } = useSelector((state) => state.user);
+  const { messages, loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
@@ -26,7 +30,7 @@ const MessageArea = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const maxSize = 1 * 1024 * 1024; // 1MB
     if (file.size > maxSize) {
       toast.error("Image size must be under 1MB", {
@@ -54,7 +58,6 @@ const MessageArea = () => {
       );
 
       const uploadImage = await res.json();
-
       setImage(uploadImage.secure_url);
       setLoading(false);
 
@@ -65,15 +68,16 @@ const MessageArea = () => {
           color: "#fff",
         },
       });
+
     } catch (error) {
       console.error("Error uploading image:", error);
+      setLoading(false);
       toast.error("Failed to upload image", {
         style: {
           background: "#f87171",
           color: "#fff",
         },
       });
-      setLoading(false);
     }
   };
 
@@ -82,17 +86,40 @@ const MessageArea = () => {
     setShowEmoji(false);
   };
 
-  // console.log("userData in MessageArea:", userData);
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (image == "" && inputMsg.trim() === "") return;
 
-  // console.log("selectedUser in MessageArea:", selectedUser);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/message/send/${selectedUser._id}`,{ 
+          image, message: inputMsg
+        },{ withCredentials: true }
+      );
+
+      dispatch(setMessages([...messages, res?.data?.newMessage]));
+      setInputMsg("");
+      setImage("");
+
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message", {
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+    }
+  };
+  
+
   if (loading) return <Loader />;
+  if (loadingMsg) return <Loader />;
 
   return (
     <div
-      className={`lg:w-2/3 w-full h-full ${
-        selectedUser === null ? "hidden" : "flex"
-      } lg:block overflow-hidden relative`}
-    >
+      className={`lg:w-2/3 w-full h-full ${selectedUser === null ? "hidden" : "flex"} lg:block overflow-hidden relative`}>
+
       {/* background Image */}
       <div
         className="absolute inset-y-0 right-0 w-full h-full bg-cover bg-center opacity-50"
@@ -101,6 +128,7 @@ const MessageArea = () => {
 
       {/* Overlay, for absolute */}
       <div className="absolute w-full z-10 h-full flex flex-col">
+
         {/* Header */}
         <div className="bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3">
           <IoMdArrowRoundBack
@@ -123,16 +151,16 @@ const MessageArea = () => {
         <div className=" z-50 w-full lg:w-[70%] h-[100px] fixed bottom-0 flex items-center justify-center">
           <form
             className="w-[95%] lg:max-w-[70%] h-[50px] shadow-gray-500 shadow-lg rounded-full bg-blue-500 flex items-center justify-between px-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
+            onSubmit={handleSendMessage}
           >
+
             {/* emoji and input area */}
             <div className="flex w-full items-center justify-center gap-3">
               <RiEmojiStickerLine
                 className="text-3xl text-white cursor-pointer"
                 onClick={() => setShowEmoji((prev) => !prev)}
               />
+
               <input
                 type="text"
                 placeholder="type message here..."
@@ -144,8 +172,8 @@ const MessageArea = () => {
 
             {/* image and send button */}
             <div className="flex items-center gap-3 pr-3">
-              {/* image upload */}
 
+              {/* image upload */}
               <input
                 type="file"
                 ref={fileInputRef}
@@ -153,6 +181,8 @@ const MessageArea = () => {
                 accept="image/*"
                 className="hidden"
               />
+
+              {/* send time image show popup */}
               {image && (
                 <div className="fixed bottom-[90px] right-5 sm:right-15 ">
                   <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden border-4 border-indigo-500 shadow-lg">
@@ -165,10 +195,15 @@ const MessageArea = () => {
                 </div>
               )}
 
+              {/* image upload button */}
               <button onClick={() => fileInputRef.current.click()}>
                 <FaImage className="text-2xl text-white cursor-pointer" />
               </button>
-              <BsFillSendFill className="text-2xl text-white cursor-pointer" />
+
+              {/* send msg button, form button */}
+              <button>
+                <BsFillSendFill className="text-2xl text-white cursor-pointer" />
+              </button>
             </div>
           </form>
         </div>
@@ -187,12 +222,22 @@ const MessageArea = () => {
           </div>
         )}
 
-        {/* Messages area */}
+        {/* Messages chat area */}
         <div className="w-full h-full overflow-auto no-scrollbar">
-          {/* <SenderMsg/>
-          <ReciverMsg/> */}
+          {messages?.length === 0 && (
+            <div className="flex items-center justify-center h-full">
+              <h1 className="text-2xl text-gray-900">No messages yet</h1>
+            </div>
+          )}
+
+          {messages?.map((msg) => {
+            return msg?.sender === userData?._id ? (
+              <SenderMsg key={msg?._id} msg={msg} />
+            ) : (
+              <ReciverMsg key={msg?._id} msg={msg} />
+            );
+          })}
         </div>
-        
       </div>
     </div>
   );

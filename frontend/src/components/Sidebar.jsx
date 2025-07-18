@@ -8,10 +8,11 @@ import axios from "axios";
 import { setOtherUsers, setSelectedUser, setUserData } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Loader from "./Loader";
 
 
 const Sidebar = () => {
-  const { userData, otherUsers,selectedUser } = useSelector((state) => state.user);
+  const { userData, otherUsers,selectedUser,loading } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,8 +20,7 @@ const Sidebar = () => {
   const handleLogOut = async () => {
     try {
       const res = await axios(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`,
-        {
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`,{
           withCredentials: true,
         }
       );
@@ -51,6 +51,8 @@ const Sidebar = () => {
       }
     }
   };
+
+  if(loading) return <Loader/>
 
   return (
     <div className={`lg:w-1/3 w-full h-full lg:block ${selectedUser === null ? "block" : "hidden"} bg-gradient-to-br from-purple-100 to-[#63d8ff]`}>
