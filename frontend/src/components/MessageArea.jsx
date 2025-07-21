@@ -12,10 +12,11 @@ import toast from "react-hot-toast";
 import Loader from "./Loader";
 import axios from "axios";
 import { setMessages } from "../features/messageSlice";
+import { useEffect } from "react";
 
 
 const MessageArea = () => {
-  const { selectedUser, userData } = useSelector((state) => state.user);
+  const { selectedUser, userData, socket } = useSelector((state) => state.user);
   const { messages, loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
@@ -111,6 +112,13 @@ const MessageArea = () => {
       });
     }
   };
+
+  useEffect(()=>{
+    socket.on("newMsg", (newMessage) => {
+      dispatch(setMessages([...messages, newMessage]));
+    });
+    return () => socket.off("newMsg");
+  },[socket, messages, dispatch]);
   
 
   if (loading) return <Loader />;
@@ -196,14 +204,16 @@ const MessageArea = () => {
               )}
 
               {/* image upload button */}
-              <button onClick={() => fileInputRef.current.click()}>
+              <button onClick={() => fileInputRef.current.click()} type="button">
                 <FaImage className="text-2xl text-white cursor-pointer" />
               </button>
 
               {/* send msg button, form button */}
-              <button>
+              { (image || inputMsg.trim() !== "")  && (
+                <button type="submit">
                 <BsFillSendFill className="text-2xl text-white cursor-pointer" />
               </button>
+              )}
             </div>
           </form>
         </div>

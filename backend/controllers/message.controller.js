@@ -1,5 +1,6 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import { getReciverSocketId, io } from "../socket/socket.js";
 
 
 export const sendMessage = async (req, res) => {
@@ -28,6 +29,12 @@ export const sendMessage = async (req, res) => {
         }else{  // If we find conversation, it returns an array of messages objects, so we just push the new message id to the messages array and save it
             conversation.messages.push(newMessage._id);
             await conversation.save();
+        }
+
+        const reciverSocketId = getReciverSocketId(receiver);
+
+        if(reciverSocketId){
+            io.to(reciverSocketId).emit("newMsg",newMessage)
         }
 
         return res.status(201).json({

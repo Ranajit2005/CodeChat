@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoSearchOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
@@ -88,7 +89,9 @@ const Sidebar = () => {
             <img
               src={userData?.image}
               alt="Profile"
-              className="w-14 h-14 rounded-full shadow-lg shadow-gray-700 cursor-pointer"
+              className="w-14 h-14 rounded-full object-cover cursor-pointer 
+           shadow-lg shadow-gray-700 hover:shadow-xl hover:shadow-gray-600
+           border-1 border-white hover:scale-105 transition-all duration-200"
             />
           </a>
         </div>
