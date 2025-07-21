@@ -15,8 +15,8 @@ import { setMessages } from "../features/messageSlice";
 import { useEffect } from "react";
 
 
-const MessageArea = () => {
-  const { selectedUser, userData, socket } = useSelector((state) => state.user);
+const MessageArea = () => { 
+  const { selectedUser, userData,socket } = useSelector((state) => state.user);
   const { messages, loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
@@ -138,7 +138,7 @@ const MessageArea = () => {
       <div className="absolute w-full z-10 h-full flex flex-col">
 
         {/* Header */}
-        <div className="bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3">
+        <div className="relative bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3">
           <IoMdArrowRoundBack
             className="text-2xl cursor-pointer"
             onClick={() => {
@@ -147,9 +147,11 @@ const MessageArea = () => {
           />
           <img
             src={selectedUser?.image || "/chaticon.png"}
-            className="h-8 w-8 sm:h-10 sm:w-10 rounded-full"
+            className="h-10 w-10 sm:h-10 sm:w-10 rounded-full"
             alt="🤔"
           />
+          <div className="rounded-full bg-green-500 h-3 w-3 absolute left-19 bottom-3  border-1 shadow-md shadow-gray-700 border-black">
+          </div>
           <h1 className="text-xl">
             {selectedUser?.username || "select user for chat"}
           </h1>
@@ -233,13 +235,12 @@ const MessageArea = () => {
         )}
 
         {/* Messages chat area */}
-        <div className="w-full h-full overflow-auto no-scrollbar">
+        <div className="w-full h-[85vh] lg:h-full mb-15 overflow-auto no-scrollbar">
           {messages?.length === 0 && (
             <div className="flex items-center justify-center h-full">
               <h1 className="text-2xl text-gray-900">No messages yet</h1>
             </div>
           )}
-
           {messages?.map((msg) => {
             return msg?.sender === userData?._id ? (
               <SenderMsg key={msg?._id} msg={msg} />

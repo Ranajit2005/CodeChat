@@ -13,8 +13,9 @@ import Loader from "./Loader";
 
 
 const Sidebar = () => {
-  const { userData, otherUsers,selectedUser,loading } = useSelector((state) => state.user);
+  const { userData, otherUsers,selectedUser,loading,onlineUsers } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
+  const [searchTxt, setSearchTxt] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,6 +54,8 @@ const Sidebar = () => {
     }
   };
 
+  // console.log(searchTxt)
+
   if(loading) return <Loader/>
 
   return (
@@ -78,7 +81,7 @@ const Sidebar = () => {
               href="/profile"
               className="lg:text-sm text-xs text-black cursor-pointer"
             >
-              @{userData.username}
+              @{userData?.username}
             </a>
           </div>
 
@@ -126,6 +129,8 @@ const Sidebar = () => {
                     type="text"
                     placeholder="Search User"
                     className="h-full bg-transparent outline-none w-full px-1"
+                    value={searchTxt}
+                    onChange={(e) => setSearchTxt(e.target.value)}
                   />
                   <RxCross2
                     className="text-xl cursor-pointer flex-shrink-0"
@@ -142,20 +147,25 @@ const Sidebar = () => {
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
               {otherUsers.slice(-5).map((user) => (
-                <div key={user._id} className="relative group" onClick={() => dispatch(setSelectedUser(user))}>
+                Array.isArray(onlineUsers) && onlineUsers.includes(user?._id) && (
+                  <div key={user?._id} className="relative group" onClick={() => dispatch(setSelectedUser(user))}>
                   <div className="flex items-center gap-2 bg-white rounded-full shadow-lg shadow-gray-400 cursor-pointer">
                     <img
-                      src={user.image}
-                      alt={user.username}
-                      className="w-11 h-11  rounded-full hover:shadow-lg shadow-2xl shadow-gray-700 cursor-pointer"
+                      src={user?.image}
+                      alt={user?.username}
+                      className="w-12 h-12  rounded-full hover:shadow-lg shadow-2xl shadow-gray-700 cursor-pointer border-1 border-white hover:scale-105 transition-all duration-200"
                     />
+                  </div>
+                  {/* green dot for online users */}
+                  <div className="rounded-full bg-green-500 h-3 w-3 absolute right-0 bottom-0 border-1 shadow-md shadow-gray-700">
                   </div>
                   {/* Tooltip */}
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
-                    @{user.username}
+                    @{user?.username}
                     <div className="absolute bottom-full left-1/2 w-2 h-2 bg-gray-800 transform -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
                   </div>
                 </div>
+                )
               ))}
             </div>
           )}
@@ -168,15 +178,22 @@ const Sidebar = () => {
           <div className=" overflow-y-auto scrollbar-hide px-1">
             {otherUsers.map((user) => (
               <div
-                key={user._id}
+                key={user?._id}
                 onClick={()=>{dispatch(setSelectedUser(user))}}
-                className="flex items-center gap-3  hover:bg-blue-300 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
+                className="relative flex items-center gap-3  hover:bg-blue-300 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
               >
                 <img
                   src={user?.image}
                   alt={user?.username}
                   className="w-12 h-12 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-1"
                 />
+
+                {/* green dot for online users */}
+                {Array.isArray(onlineUsers) && onlineUsers.includes(user?._id) && (
+                  <div className="rounded-full bg-green-500 h-3 w-3 absolute left-9 bottom-1 border-1 shadow-md shadow-gray-700">
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-0 py-2">
                   <h2 className="text-lg font-semibold text-black">
                     {user?.name}
