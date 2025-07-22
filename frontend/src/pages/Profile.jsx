@@ -91,6 +91,17 @@ const ProfilePage = () => {
         });
       }
 
+      if(bio.length > 35){
+        setLoading(false);
+        return toast("Bio should be less than 35 characters", {
+          icon: "❌",
+          style: {
+            background: "#f87171",
+            color: "#fff",
+          },
+        });
+      }
+
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/updateProfile`,{
           name: name,

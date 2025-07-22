@@ -16,7 +16,7 @@ import { useEffect } from "react";
 
 
 const MessageArea = () => { 
-  const { selectedUser, userData,socket } = useSelector((state) => state.user);
+  const { selectedUser, userData,socket,onlineUsers } = useSelector((state) => state.user);
   const { messages, loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
@@ -150,11 +150,21 @@ const MessageArea = () => {
             className="h-10 w-10 sm:h-10 sm:w-10 rounded-full"
             alt="🤔"
           />
-          <div className="rounded-full bg-green-500 h-3 w-3 absolute left-19 bottom-3  border-1 shadow-md shadow-gray-700 border-black">
+
+          {/* Online status indicator */}
+          {Array.isArray(onlineUsers) && onlineUsers.includes(selectedUser?._id) && (
+            <div className="rounded-full bg-green-500 h-3 w-3 absolute left-19 bottom-3  border-1 shadow-md shadow-gray-700 border-black">
           </div>
-          <h1 className="text-xl">
-            {selectedUser?.username || "select user for chat"}
-          </h1>
+          )}
+          
+          <div>
+            <h1 className="text-xl">
+              {selectedUser?.name || "select user for chat"}
+            </h1>
+            <p className="text-sm text-gray-900">
+              @{selectedUser?.username}
+            </p>
+          </div>
         </div>
 
         {/* meggase input area */}

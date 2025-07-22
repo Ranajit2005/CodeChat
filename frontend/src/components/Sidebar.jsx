@@ -1,19 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { IoSearchOutline } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { BiLogOutCircle } from "react-icons/bi";
 import axios from "axios";
-import { setOtherUsers, setSelectedUser, setUserData } from "../features/userSlice";
+import { setOtherUsers, setSearchUser, setSelectedUser, setUserData } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Loader from "./Loader";
 
 
 const Sidebar = () => {
-  const { userData, otherUsers,selectedUser,loading,onlineUsers } = useSelector((state) => state.user);
+  const { userData, otherUsers,selectedUser,loading,onlineUsers,searchUsers } = useSelector((state) => state.user);
   const [search, setSearch] = useState(false);
   const [searchTxt, setSearchTxt] = useState("");
   const dispatch = useDispatch();
@@ -54,7 +54,34 @@ const Sidebar = () => {
     }
   };
 
-  // console.log(searchTxt)
+  const handleSearch = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/search?query=${searchTxt}`, {
+        withCredentials: true,
+      });
+
+      dispatch(setSearchUser(res?.data?.users));
+      console.log("Search Results:", searchUsers);
+      // setSearchTxt("");
+
+    } catch (error) {
+      console.error("Error searching user:", error);
+      toast.error("Failed to search user", {
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (searchTxt) {handleSearch();}
+    if(searchTxt == ""){
+      setSearch(false);
+      dispatch(setSearchUser(null));
+    }
+  }, [searchTxt]);
 
   if(loading) return <Loader/>
 
@@ -143,7 +170,9 @@ const Sidebar = () => {
             </AnimatePresence>
           </div>
 
-          {/* Other Users */}
+         
+
+          {/* Online Users */}
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
               {otherUsers.slice(-5).map((user) => (
@@ -153,7 +182,9 @@ const Sidebar = () => {
                     <img
                       src={user?.image}
                       alt={user?.username}
-                      className="w-12 h-12  rounded-full hover:shadow-lg shadow-2xl shadow-gray-700 cursor-pointer border-1 border-white hover:scale-105 transition-all duration-200"
+                      className="w-12 h-12 rounded-full object-cover cursor-pointer 
+           shadow-lg shadow-gray-700 hover:shadow-xl hover:shadow-gray-600
+           border-1 border-white hover:scale-105 transition-all duration-200"
                     />
                   </div>
                   {/* green dot for online users */}
@@ -170,6 +201,40 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+
+          <div className="relative">
+            {/* Search Results */}
+            {Array.isArray(searchUsers) && search && searchUsers && searchUsers.length > 0 ? (
+              <div className="absolute z-50 bg-white ml-5 rounded-lg mt-1">
+                { searchUsers.map((user) => (
+                  <div
+                    key={user?._id}
+                    onClick={()=>{dispatch(setSelectedUser(user)); setSearchTxt("")}}
+                    className="relative flex items-center gap-2 hover:bg-blue-300 transition-colors duration-200 shadow-md shadow-gray-300 cursor-pointer w-[250px] hover:rounded-lg"
+                  >
+                    <img
+                      src={user?.image}
+                      alt={user?.username}
+                      className="w-10 h-10 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-3"
+                    />
+                    <div className="flex flex-col gap-0 py-2">
+                      <h2 className="text-sm font-semibold text-black">
+                        {user?.name}
+                      </h2>
+                      <p className="text-xs">{user?.username}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              search && searchTxt != "" && (
+                <div className="flex items-center justify-center absolute z-50 px-1 bg-white ml-5 rounded-lg mt-1 w-[250px] h-10">
+                  <p className="text-gray-700">No users found</p>
+                </div>
+              )
+            )}
+          </div>
+
       </div>
 
       {/* user Chat Section */}
@@ -180,12 +245,14 @@ const Sidebar = () => {
               <div
                 key={user?._id}
                 onClick={()=>{dispatch(setSelectedUser(user))}}
-                className="relative flex items-center gap-3  hover:bg-blue-300 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1"
+                className="relative flex items-center gap-3  hover:bg-blue-300 transition-colors duration-200 rounded-full shadow-md shadow-gray-300 cursor-pointer my-1 pl-1"
               >
                 <img
                   src={user?.image}
                   alt={user?.username}
-                  className="w-12 h-12 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-1"
+                  className="w-12 h-12 rounded-full object-cover cursor-pointer 
+           shadow-lg shadow-gray-700 hover:shadow-xl hover:shadow-gray-600
+           border-1 border-white"
                 />
 
                 {/* green dot for online users */}
@@ -198,7 +265,7 @@ const Sidebar = () => {
                   <h2 className="text-lg font-semibold text-black">
                     {user?.name}
                   </h2>
-                  <p className="text-sm text-gray-900">@{user?.username}</p>
+                  <p className="text-sm text-gray-900">{user?.bio}</p>
                 </div>
               </div>
             ))}

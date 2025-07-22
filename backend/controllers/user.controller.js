@@ -81,3 +81,35 @@ export const getOtherUser = async (req,res) => {
         });
     }
 }
+
+export const searchUser = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: "Query is required"
+            });
+        }
+
+        const users = await User.find({
+            $or: [
+                { name: { $regex: query, $options: "i" } },
+                { username: { $regex: query, $options: "i" } }
+            ]
+        }).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            users
+        });
+        
+    } catch (error) {
+        console.error("Error searching users:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
