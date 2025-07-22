@@ -30,14 +30,14 @@ export const getCurrentUser = async (req, res) =>{
 
 export const updateProfile = async (req, res) => {
     try {
-        const { name, image, publicId, email } = req.body;
+        const { name, image, publicId, bio } = req.body;
         const userId = req.user;
         
         const user = await User.findByIdAndUpdate(userId,{
             name,
             image,
             publicId,
-            email
+            bio
         },{new:true});
 
         if(!user){

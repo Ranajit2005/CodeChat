@@ -16,20 +16,22 @@ const ProfilePage = () => {
   const [image, setImage] = useState(userData?.image || "");
   const [publicId, setPublicId] = useState(userData?.publicId || "");
   const [name, setName] = useState(userData?.name || null);
-  const [email, setEmail] = useState(userData?.email || null);
+  const [bio, setBio] = useState(userData?.bio);
   const [hasChanges, setHasChanges] = useState(false);
 
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
 
+  console.log("User Data:", userData);
+
   // Check for changes whenever inputs change
   useEffect(() => {
     const isNameChanged = name !== null && name !== userData?.name;
-    const isEmailChanged = email !== null && email !== userData?.email;
+    const isBioChanged = bio !== null && bio !== userData?.bio;
     const isImageChanged = image !== userData?.image;
 
-    setHasChanges(isNameChanged || isEmailChanged || isImageChanged);
-  }, [name, email, image, userData]);
+    setHasChanges(isNameChanged || isBioChanged || isImageChanged);
+  }, [name, bio, image, userData]);
 
   // Handle image upload
   const handleImageUpload = async (e) => {
@@ -92,7 +94,7 @@ const ProfilePage = () => {
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/updateProfile`,{
           name: name,
-          email: email,
+          bio: bio,
           image: image,
           publicId: publicId,
         },
@@ -144,7 +146,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Profile Content */}
-        <div className="flex flex-col md:flex-row p-6 gap-8">
+        <div className="flex flex-col md:flex-row p-6 gap-8 bg-gradient-to-br from-blue-300 to-purple-300">
           {/* Profile Image Section */}
           <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
             <div className="relative mb-6">
@@ -203,16 +205,16 @@ const ProfilePage = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email Address
+                Bio
               </label>
               <input
                 type="email"
                 id="email"
                 name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none"
-                placeholder={userData?.email}
+                placeholder={userData?.bio}
                 required
               />
             </div>

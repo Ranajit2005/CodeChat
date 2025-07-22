@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     publicId:{
         type: String,
         default: ""
+    },
+    bio:{
+        type: String,
+        default: "H"
     }
 
 },{timestamps: true});
