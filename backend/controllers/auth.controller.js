@@ -95,7 +95,6 @@ export const login = async (req,res) =>{
             message: "User login successfully",
             user
         })
-
         
     } catch (error) {
 

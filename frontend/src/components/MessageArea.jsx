@@ -17,7 +17,7 @@ import { useEffect } from "react";
 
 const MessageArea = () => { 
   const { selectedUser, userData,socket,onlineUsers } = useSelector((state) => state.user);
-  const { messages, loadingMsg } = useSelector((state) => state.messages);
+  const { messages = [], loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
