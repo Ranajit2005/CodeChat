@@ -32,16 +32,6 @@ const MessageArea = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const maxSize = 1 * 1024 * 1024; // 1MB
-    if (file.size > maxSize) {
-      toast.error("Image size must be under 1MB", {
-        style: {
-          background: "#f87171",
-          color: "#fff",
-        },
-      });
-      return;
-    }
     setLoadingImage(true);
 
     const formData = new FormData();

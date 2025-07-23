@@ -41,6 +41,18 @@ const ProfilePage = () => {
 
     const file = e.target.files[0];
     if (!file) return;
+    
+    const maxSize = 1 * 1024 * 1024; // 1MB
+    if (file.size > maxSize) {
+      toast.error("Image size must be under 1MB", {
+        style: {
+          background: "#f87171",
+          color: "#fff",
+        },
+      });
+      return;
+    }
+
     setLoadingImage(true);
 
     const formData = new FormData();
@@ -97,6 +109,7 @@ const ProfilePage = () => {
 
       if (bio.length > 35) {
         setLoading(false);
+        
         return toast("Bio should be less than 35 characters", {
           icon: "❌",
           style: {
