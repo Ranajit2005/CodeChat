@@ -60,7 +60,7 @@ export const getMessages = async (req,res) => {
         }).populate("messages");
 
         if(!conversation){
-            return res.status(404).json({
+            return res.status(204).json({
                 success: false,
                 message: "No conversation found with this user"
             });

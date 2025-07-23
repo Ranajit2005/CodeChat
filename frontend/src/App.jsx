@@ -16,8 +16,7 @@ function App() {
 
   const dispatch = useDispatch();
 
-  const { userData,loading,socket,onlineUsers } = useSelector((state) => state.user);
-
+  const { userData,loading,socket } = useSelector((state) => state.user);
 
   useCurrentUser();
   useOtherUsers();
@@ -34,16 +33,13 @@ function App() {
       }
     });
 
-
     dispatch(setSocket(socketio));
 
     socketio.on("getOnlineUsers", (users) => {
       dispatch(setOnlineUsers(users));
     });
-
+    
     return () => socketio.close();
-
-
   },[userData,dispatch]);
 
   if (loading) return <Loader/>;

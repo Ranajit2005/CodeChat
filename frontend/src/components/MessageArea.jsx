@@ -22,7 +22,7 @@ const MessageArea = () => {
   const [showEmoji, setShowEmoji] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
   const [image, setImage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
@@ -42,7 +42,7 @@ const MessageArea = () => {
       });
       return;
     }
-    setLoading(true);
+    setLoadingImage(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -60,7 +60,7 @@ const MessageArea = () => {
 
       const uploadImage = await res.json();
       setImage(uploadImage.secure_url);
-      setLoading(false);
+      setLoadingImage(false);
 
       toast("Image uploaded successfully!", {
         icon: "✅",
@@ -72,7 +72,7 @@ const MessageArea = () => {
 
     } catch (error) {
       console.error("Error uploading image:", error);
-      setLoading(false);
+      setLoadingImage(false);
       toast.error("Failed to upload image", {
         style: {
           background: "#f87171",
@@ -119,9 +119,21 @@ const MessageArea = () => {
     });
     return () => socket.off("newMsg");
   },[socket, messages, dispatch]);
-  
 
-  if (loading) return <Loader />;
+  useEffect(() => {
+    if (loadingImage) {
+      toast.loading("Uploading image...", {
+        id: "uploading-image",
+        style: {
+          background: "#4ade80",
+          color: "#fff",
+        },
+      });
+    } else {
+      toast.dismiss("uploading-image");
+    }
+  }, [loadingImage]);
+
   if (loadingMsg) return <Loader />;
 
   return (
@@ -205,11 +217,11 @@ const MessageArea = () => {
               {/* send time image show popup */}
               {image && (
                 <div className="fixed bottom-[90px] right-5 sm:right-15 ">
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden border-4 border-indigo-500 shadow-lg">
+                  <div className="sm:max-w-52 sm:max-h-52 rounded-lg overflow-hidden border-2 border-indigo-500 shadow-lg">
                     <img
                       src={image}
                       alt="Profile"
-                      className="w-full h-full object-cover p-1"
+                      className="max-h-52 max-w-52 object-contain p-1"
                     />
                   </div>
                 </div>

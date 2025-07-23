@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { setUserData } from "../features/userSlice";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+
 
 const ProfilePage = () => {
   let { userData } = useSelector((state) => state.user);
@@ -18,11 +21,11 @@ const ProfilePage = () => {
   const [name, setName] = useState(userData?.name || null);
   const [bio, setBio] = useState(userData?.bio);
   const [hasChanges, setHasChanges] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-
-  console.log("User Data:", userData);
+  const navigate = useNavigate();
 
   // Check for changes whenever inputs change
   useEffect(() => {
@@ -35,9 +38,10 @@ const ProfilePage = () => {
 
   // Handle image upload
   const handleImageUpload = async (e) => {
-    setLoading(true);
+
     const file = e.target.files[0];
     if (!file) return;
+    setLoadingImage(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -57,7 +61,7 @@ const ProfilePage = () => {
 
       setImage(uploadImage.secure_url);
       setPublicId(uploadImage.public_id);
-      setLoading(false);
+      setLoadingImage(false);
 
       toast("Image uploaded successfully!", {
         icon: "✅",
@@ -80,7 +84,7 @@ const ProfilePage = () => {
     try {
       setLoading(true);
 
-      if(name.length > 20){
+      if (name.length > 20) {
         setLoading(false);
         return toast("Name should be less than 20 characters", {
           icon: "❌",
@@ -91,7 +95,7 @@ const ProfilePage = () => {
         });
       }
 
-      if(bio.length > 35){
+      if (bio.length > 35) {
         setLoading(false);
         return toast("Bio should be less than 35 characters", {
           icon: "❌",
@@ -104,12 +108,11 @@ const ProfilePage = () => {
 
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/updateProfile`,{
-          name: name,
-          bio: bio,
-          image: image,
-          publicId: publicId,
-        },
-        { withCredentials: true}
+            name: name,
+            bio: bio,
+            image: image,
+            publicId: publicId,
+        },{ withCredentials: true }
       );
 
       setLoading(false);
@@ -141,13 +144,33 @@ const ProfilePage = () => {
     }
   };
 
+  useEffect(() => {
+
+    if (loadingImage) {
+      toast.loading("Uploading image...", {
+        id: "uploading-image",
+        style: {
+          background: "#4ade80",
+          color: "#fff",
+        },
+      });
+    } else {
+      toast.dismiss("uploading-image");
+    }
+  }, [loadingImage]);
+
   if (loading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+
         {/* Profile Header */}
-        <div className="bg-indigo-600 p-4 flex items-center justify-center gap-3 text-white">
+        <div className="bg-indigo-600 p-4 flex items-center justify-center gap-3 text-white relative">
+          <IoMdArrowRoundBack
+            className="cursor-pointer text-2xl sm:text-3xl absolute left-3"
+            onClick={() => navigate(-1)}
+          />
           <img
             src="/chaticon.png"
             className="h-8 w-8 sm:h-10 sm:w-10"
@@ -158,6 +181,7 @@ const ProfilePage = () => {
 
         {/* Profile Content */}
         <div className="flex flex-col md:flex-row p-6 gap-8 bg-gradient-to-br from-blue-300 to-purple-300">
+
           {/* Profile Image Section */}
           <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
             <div className="relative mb-6">

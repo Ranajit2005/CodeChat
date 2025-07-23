@@ -13,6 +13,7 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -24,13 +25,11 @@ const SignUp = () => {
       setIsLoading(true);
 
       let result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`,
-        {
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`,{
           username: formData.username,
           email: formData.email,
           password: formData.password,
-        },
-        { withCredentials: true }
+        },{ withCredentials: true }
       );
 
       setIsLoading(false);
@@ -48,6 +47,7 @@ const SignUp = () => {
       setFormData({ username: "", email: "", password: "" });
       dispatch(setUserData(result?.data?.user));
       navigate("/");
+      
     } catch (error) {
       setIsLoading(false);
 

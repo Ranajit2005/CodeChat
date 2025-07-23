@@ -8,7 +8,6 @@ import useMessage from "../CustomHooks/useMessage";
 const Home = () => {
   const { selectedUser } = useSelector((state) => state.user);
   useMessage();
-
   return (
     <div className="flex w-full h-screen">
       <Sidebar />

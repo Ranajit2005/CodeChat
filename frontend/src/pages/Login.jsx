@@ -13,6 +13,7 @@ const LogIn = () => {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -25,12 +26,10 @@ const LogIn = () => {
       setIsLoading(true);
 
       let result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        {
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,{
           email: formData.email,
           password: formData.password,
-        },
-        { withCredentials: true }
+        },{ withCredentials: true }
       );
       setIsLoading(false);
 
@@ -70,6 +69,7 @@ const LogIn = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2">
+        
         {/* Left Side - Image (Hidden on mobile) */}
         <div className="hidden lg:block relative">
           <div
