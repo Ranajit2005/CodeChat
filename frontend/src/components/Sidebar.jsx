@@ -238,7 +238,7 @@ const Sidebar = () => {
       </div>
 
       {/* user Chat Section */}
-      <div>
+      <div className="overflow-y-auto h-[calc(100vh-200px)] no-scrollbar">
         {otherUsers && otherUsers.length > 0 ? (
           <div className=" overflow-y-auto scrollbar-hide px-1">
             {otherUsers.map((user) => (

@@ -150,7 +150,7 @@ const MessageArea = () => {
       <div className="absolute w-full z-10 h-full flex flex-col">
 
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3">
+        <div className="relative bg-gradient-to-br from-purple-500 to-[#20c7ff] py-3 rounded-b-[30px] flex items-center justify-start gap-3 text-white pl-3 h-[70px]">
           <IoMdArrowRoundBack
             className="text-2xl cursor-pointer"
             onClick={() => {
@@ -257,7 +257,7 @@ const MessageArea = () => {
         )}
 
         {/* Messages chat area */}
-        <div className="w-full h-[85vh] lg:h-full mb-15 overflow-auto no-scrollbar">
+        <div className="w-full h-[calc(100vh-70px)] lg:h-full mb-15 overflow-y-auto no-scrollbar">
           {messages?.length === 0 && (
             <div className="flex items-center justify-center h-full">
               <h1 className="text-2xl text-gray-900">No messages yet</h1>
