@@ -149,7 +149,7 @@ const MessageArea = () => {
           />
           <img
             src={selectedUser?.image || "/chaticon.png"}
-            className="h-10 w-10 sm:h-10 sm:w-10 rounded-full"
+            className="h-10 w-10 sm:h-11 sm:w-11 rounded-full object-cover border-1"
             alt="🤔"
           />
 

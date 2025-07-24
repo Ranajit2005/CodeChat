@@ -28,7 +28,7 @@ const SenderMsg = (msg) => {
 
       {msg?.msg?.message && <span>{msg?.msg?.message}</span>}
       <div className=" flex items-center justify-end">
-        <span className="text-xs text-gray-700">{formattedTime}</span>
+        <span className="text-xs text-gray-700 pl-5">{formattedTime}</span>
       </div>
     </div>
   );
