@@ -210,7 +210,7 @@ const Sidebar = () => {
                   <div
                     key={user?._id}
                     onClick={()=>{dispatch(setSelectedUser(user)); setSearchTxt("")}}
-                    className="relative flex items-center gap-2 hover:bg-blue-300 transition-colors duration-200 shadow-md shadow-gray-300 cursor-pointer w-[250px] hover:rounded-lg"
+                    className="relative flex object-cover items-center gap-2 hover:bg-blue-300 transition-colors duration-200 shadow-md shadow-gray-300 cursor-pointer w-[250px] hover:rounded-lg"
                   >
                     <img
                       src={user?.image}
