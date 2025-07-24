@@ -16,7 +16,7 @@ import { useEffect } from "react";
 
 
 const MessageArea = () => { 
-  const { selectedUser, userData,socket,onlineUsers } = useSelector((state) => state.user);
+  const { selectedUser, userData, socket, onlineUsers } = useSelector((state) => state.user);
   const { messages = [], loadingMsg } = useSelector((state) => state.messages);
 
   const [showEmoji, setShowEmoji] = useState(false);
@@ -27,6 +27,15 @@ const MessageArea = () => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   const VITE_CLOUDNAME = import.meta.env.VITE_CLOUDNAME;
+
+  const temporaryMsg = {
+    image,
+    message: inputMsg,
+    createdAt: new Date().toISOString(),
+    _id: Date.now().toString(), // Temporary ID
+    sender: userData?._id,
+    isTemp: true // Flag to identify temporary messages
+  };
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -41,8 +50,7 @@ const MessageArea = () => {
 
     try {
       const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${VITE_CLOUDNAME}/image/upload`,
-        {
+        `https://api.cloudinary.com/v1_1/${VITE_CLOUDNAME}/image/upload`,{
           method: "POST",
           body: formData,
         }
@@ -81,19 +89,32 @@ const MessageArea = () => {
     e.preventDefault();
     if (image == "" && inputMsg.trim() === "") return;
 
+    // Add temporary message to UI immediately
+    dispatch(setMessages([...messages, temporaryMsg]));
+    setInputMsg("");
+    setImage("");
+
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/message/send/${selectedUser._id}`,{ 
-          image, message: inputMsg
-        },{ withCredentials: true }
+        `${import.meta.env.VITE_BACKEND_URL}/api/message/send/${selectedUser._id}`,
+        { 
+          image, 
+          message: inputMsg
+        },
+        { withCredentials: true }
       );
 
-      dispatch(setMessages([...messages, res?.data?.newMessage]));
-      setInputMsg("");
-      setImage("");
+      // Replace temporary message with real message from server
+      dispatch(setMessages([
+        ...messages.filter(msg => msg._id !== temporaryMsg._id),
+        res?.data?.newMessage
+      ]));
 
     } catch (error) {
       console.error("Error sending message:", error);
+      // Remove the temporary message if sending fails
+      dispatch(setMessages(messages.filter(msg => msg._id !== temporaryMsg._id)));
+      
       toast.error("Failed to send message", {
         style: {
           background: "#f87171",
@@ -103,12 +124,12 @@ const MessageArea = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     socket.on("newMsg", (newMessage) => {
       dispatch(setMessages([...messages, newMessage]));
     });
     return () => socket.off("newMsg");
-  },[socket, messages, dispatch]);
+  }, [socket, messages, dispatch]);
 
   useEffect(() => {
     if (loadingImage) {
@@ -156,7 +177,7 @@ const MessageArea = () => {
           {/* Online status indicator */}
           {Array.isArray(onlineUsers) && onlineUsers.includes(selectedUser?._id) && (
             <div className="rounded-full bg-green-500 h-3 w-3 absolute left-19 bottom-3  border-1 shadow-md shadow-gray-700 border-black">
-          </div>
+            </div>
           )}
           
           <div>
@@ -169,7 +190,7 @@ const MessageArea = () => {
           </div>
         </div>
 
-        {/* meggase input area */}
+        {/* message input area */}
         <div className=" z-50 w-full lg:w-[70%] h-[100px] fixed bottom-0 flex items-center justify-center">
           <form
             className="w-[95%] lg:max-w-[70%] h-[50px] shadow-gray-500 shadow-lg rounded-full bg-blue-500 flex items-center justify-between px-3"
@@ -223,10 +244,10 @@ const MessageArea = () => {
               </button>
 
               {/* send msg button, form button */}
-              { (image || inputMsg.trim() !== "")  && (
+              {(image || inputMsg.trim() !== "") && (
                 <button type="submit">
-                <BsFillSendFill className="text-2xl text-white cursor-pointer" />
-              </button>
+                  <BsFillSendFill className="text-2xl text-white cursor-pointer" />
+                </button>
               )}
             </div>
           </form>
@@ -254,6 +275,18 @@ const MessageArea = () => {
             </div>
           )}
           {messages?.map((msg) => {
+            if (msg?.isTemp) {
+              return (
+                <div key={msg._id} className="flex justify-end items-center gap-2 px-2 py-1">
+                  <div className="bg-gradient-to-br from-[#82ff51] to-[#00bc19] text-white px-4 py-2 rounded-lg max-w-xs opacity-80">
+                    {msg.message}
+                    {msg.image && <img src={msg.image} alt="Uploaded content" className="max-w-xs mt-2" />}
+                  </div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                </div>
+              );
+            }
+            
             return msg?.sender === userData?._id ? (
               <SenderMsg key={msg?._id} msg={msg} />
             ) : (
@@ -261,6 +294,7 @@ const MessageArea = () => {
             );
           })}
         </div>
+        
       </div>
     </div>
   );
