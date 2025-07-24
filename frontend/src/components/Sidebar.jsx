@@ -99,7 +99,7 @@ const Sidebar = () => {
         </div>
 
         {/* show user details */}
-        <div className="flex items-center justify-between my-1 lg:px-3 px-1">
+        <div className="flex items-center justify-between my-1 px-3">
           <div>
             <h1 className="text-xl font-bold text-black text-center">
               Hii, {userData?.name}

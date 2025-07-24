@@ -66,7 +66,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-1">
+    <div className="min-h-screen bg-gradient-to-br from-purple-300 to-indigo-500 flex items-center justify-center p-3">
       <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2">
         {/* Left Side - Form */}
         <div className="px-5 lg:px-9 py-5">
