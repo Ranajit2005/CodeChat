@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     bio:{
         type: String,
-        default: "H"
+        default: "Hey there! I am using CodeChat"
     }
 
 },{timestamps: true});
