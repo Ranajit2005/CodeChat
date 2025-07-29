@@ -72,7 +72,7 @@ The chat system uses **Socket.io** for real-time communication and **MongoDB** t
 
 To run the project locally, follow these steps:
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/Ranajit2005/CodeChat.git

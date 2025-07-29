@@ -170,8 +170,6 @@ const Sidebar = () => {
             </AnimatePresence>
           </div>
 
-         
-
           {/* Online Users */}
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
@@ -206,7 +204,7 @@ const Sidebar = () => {
             {/* Search Results */}
             {Array.isArray(searchUsers) && search && searchUsers && searchUsers.length > 0 ? (
               <div className="absolute z-50 bg-white ml-5 rounded-lg mt-1">
-                { searchUsers.map((user) => (
+                { searchUsers.slice(0,5).map((user) => (
                   <div
                     key={user?._id}
                     onClick={()=>{dispatch(setSelectedUser(user)); setSearchTxt("")}}
@@ -215,7 +213,7 @@ const Sidebar = () => {
                     <img
                       src={user?.image}
                       alt={user?.username}
-                      className="w-10 h-10 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-3"
+                      className="w-10 h-10 rounded-full shadow-lg shadow-gray-700 cursor-pointer my-auto ml-3 object-cover"
                     />
                     <div className="flex flex-col gap-0 py-2">
                       <h2 className="text-sm font-semibold text-black">

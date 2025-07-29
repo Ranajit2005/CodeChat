@@ -85,6 +85,7 @@ export const getOtherUser = async (req,res) => {
 export const searchUser = async (req, res) => {
     try {
         const { query } = req.query;
+        const userId = req.user;
 
         if (!query) {
             return res.status(400).json({
@@ -94,6 +95,7 @@ export const searchUser = async (req, res) => {
         }
 
         const users = await User.find({
+            _id: { $ne: userId },
             $or: [
                 { name: { $regex: query, $options: "i" } },
                 { username: { $regex: query, $options: "i" } }
