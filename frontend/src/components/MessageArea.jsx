@@ -280,7 +280,7 @@ const MessageArea = () => {
                 <div key={msg?._id} className="flex justify-end items-center gap-2 px-2 py-1">
                   <div className="bg-gradient-to-br from-[#82ff51] to-[#00bc19] text-white px-4 py-2 rounded-lg max-w-xs opacity-80">
                     {msg?.message}
-                    {msg?.image && <img src={msg?.image} alt="Uploaded content" className="max-w-xs mt-2" />}
+                    {msg?.image && <img src={msg?.image} alt="Uploaded content" className="max-h-60 max-w-60 object-contain hover:scale-105 transition-transform duration-300 cursor-pointer rounded-md" />}
                   </div>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                 </div>
