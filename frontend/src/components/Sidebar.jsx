@@ -175,7 +175,7 @@ const Sidebar = () => {
           {/* Online Users */}
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
-              {otherUsers.slice(-5).map((user) => (
+              {otherUsers.slice(0, 5).map((user) => (
                 Array.isArray(onlineUsers) && onlineUsers.includes(user?._id) && (
                   <div key={user?._id} className="relative group" onClick={() => dispatch(setSelectedUser(user))}>
                   <div className="flex items-center gap-2 bg-white rounded-full shadow-lg shadow-gray-400 cursor-pointer">
