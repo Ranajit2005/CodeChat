@@ -61,8 +61,6 @@ const Sidebar = () => {
       });
 
       dispatch(setSearchUser(res?.data?.users));
-      console.log("Search Results:", searchUsers);
-      // setSearchTxt("");
 
     } catch (error) {
       console.error("Error searching user:", error);
@@ -104,16 +102,16 @@ const Sidebar = () => {
             <h1 className="text-xl font-bold text-black text-center">
               Hii, {userData?.name}
             </h1>
-            <a
-              href="/profile"
+            <div
+              onClick={() => navigate("/profile")}
               className="lg:text-sm text-xs text-black cursor-pointer"
             >
               @{userData?.username}
-            </a>
+            </div>
           </div>
 
-          <a
-            href="/profile"
+          <div
+            onClick={() => navigate("/profile")}
             className="flex justify-center items-center bg-white rounded-full p-0"
           >
             <img
@@ -123,7 +121,7 @@ const Sidebar = () => {
            shadow-lg shadow-gray-700 hover:shadow-xl hover:shadow-gray-600
            border-1 border-white hover:scale-105 transition-all duration-200"
             />
-          </a>
+          </div>
         </div>
 
         {/* Search and Other Users */}
@@ -173,6 +171,7 @@ const Sidebar = () => {
           {/* Online Users */}
           {otherUsers && otherUsers.length > 0 && !search && (
             <div className="flex items-center gap-3 pb-2">
+              
               {otherUsers.slice(0, 5).map((user) => (
                 Array.isArray(onlineUsers) && onlineUsers.includes(user?._id) && (
                   <div key={user?._id} className="relative group" onClick={() => dispatch(setSelectedUser(user))}>
@@ -204,7 +203,7 @@ const Sidebar = () => {
             {/* Search Results */}
             {Array.isArray(searchUsers) && search && searchUsers && searchUsers.length > 0 ? (
               <div className="absolute z-50 bg-white ml-5 rounded-lg mt-1">
-                { searchUsers.slice(0,5).map((user) => (
+                {searchUsers.slice(0,5).map((user) => (
                   <div
                     key={user?._id}
                     onClick={()=>{dispatch(setSelectedUser(user)); setSearchTxt("")}}
